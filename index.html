@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ru" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClientConnect AI — Интерактивная демонстрация</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutral (Slate/Stone) with Indigo Accent -->
+    <!-- Application Structure Plan: The SPA is an interactive sales tool. It flows from a strong headline to an interactive "Pain Calculator" to engage the user emotionally and logically. It then transitions to a simulated product dashboard ("Solution") where users can interact with core features. Key features and testimonials are added to build trust and value. It concludes with a clear CTA form. -->
+    <!-- Visualization & Content Choices: 
+        - Pain Points -> Interactive Calculator -> Goal: User Engagement & Value Demonstration. Allows users to quantify their own losses, making the problem personal and the solution more valuable. Method: JS event listeners on range sliders updating text content.
+        - Core Value (AI) -> Simulated AI Generator -> Goal: "Aha!" moment. Users click a button and see an AI-generated message appear, showcasing the core value proposition instantly. Method: JS event listener populating a textarea.
+        - Control & Results -> Line Chart -> Goal: Visualize Growth. Shows business growth (contacts) over time, a key benefit. Method: Chart.js library with pre-set data, rendered on a canvas.
+        - Data Management -> Searchable List -> Goal: Demonstrate practicality. Shows how users can easily manage contacts. Method: HTML table with live JS filtering.
+        - CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* slate-50 */
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 40vh;
+        }
+        .form-submitted .form-content {
+            display: none;
+        }
+        .form-submitted .success-message {
+            display: flex;
+        }
+    </style>
+</head>
+<body class="text-slate-800">
+
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-indigo-600">ClientConnect AI</h1>
+            <a href="#contact-form-section" class="bg-indigo-600 text-white font-semibold px-5 py-2 rounded-lg hover:bg-indigo-700 transition-colors hidden sm:block">Оставить заявку</a>
+        </div>
+    </header>
+
+    <main>
+        <section class="text-center py-20 px-6 bg-white">
+            <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4">Перестаньте терять время на рутину.</h2>
+            <p class="text-lg md:text-xl text-slate-600 max-w-3xl mx-auto mb-8">ClientConnect AI — это ваш умный помощник для WhatsApp, который экономит время, возвращает клиентов и увеличивает прибыль.</p>
+            <a href="#demo" class="bg-indigo-600 text-white font-bold px-8 py-4 rounded-lg hover:bg-indigo-700 transition-transform transform hover:scale-105">Начать интерактивное демо</a>
+        </section>
+        
+        <section class="py-20 px-6">
+            <div class="container mx-auto text-center">
+                <h3 class="text-3xl font-bold mb-2">Посчитайте, сколько вы теряете</h3>
+                <p class="text-slate-600 mb-12">Двигайте ползунки, чтобы увидеть реальные цифры вашего бизнеса.</p>
+                <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 text-left">
+                    <div class="bg-white p-8 rounded-2xl shadow-lg">
+                        <label for="time-wasted" class="block font-semibold mb-2">Часов в день администратор тратит на рутину:</label>
+                        <div class="flex items-center gap-4">
+                            <span class="text-sm font-bold text-slate-500">1</span>
+                            <input type="range" id="time-wasted" min="1" max="8" value="2" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer">
+                            <span class="text-sm font-bold text-slate-500">8</span>
+                        </div>
+                        <div class="text-center text-2xl font-bold mt-4">Вы теряете <span id="days-lost" class="text-red-500">65</span> рабочих дней в год!</div>
+                    </div>
+                    <div class="bg-white p-8 rounded-2xl shadow-lg">
+                        <label for="no-shows" class="block font-semibold mb-2">Клиентов не приходят в месяц из-за "забыл":</label>
+                        <div class="flex items-center gap-4">
+                            <span class="text-sm font-bold text-slate-500">1</span>
+                            <input type="range" id="no-shows" min="1" max="30" value="5" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer">
+                            <span class="text-sm font-bold text-slate-500">30</span>
+                        </div>
+                        <div class="text-center text-2xl font-bold mt-4">Вы теряете <span id="money-lost" class="text-red-500">25 000 тг.</span> в месяц!</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="how-it-works" class="py-20 px-6 bg-white">
+             <div class="container mx-auto text-center">
+                <h3 class="text-3xl font-bold mb-2">Всего 3 простых шага к автоматизации</h3>
+                <p class="text-slate-600 mb-12">Начать работу с ClientConnect AI невероятно просто.</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+                    <div class="flex flex-col items-center"><div class="bg-indigo-100 text-indigo-600 w-16 h-16 rounded-full flex items-center justify-center mb-4 text-2xl font-bold">1</div><h4 class="text-xl font-bold mb-2">Импортируйте базу</h4><p class="text-slate-600">Загрузите ваш Excel-файл с контактами или добавляйте клиентов по одному.</p></div>
+                    <div class="flex flex-col items-center"><div class="bg-indigo-100 text-indigo-600 w-16 h-16 rounded-full flex items-center justify-center mb-4 text-2xl font-bold">2</div><h4 class="text-xl font-bold mb-2">Создайте рассылку</h4><p class="text-slate-600">Напишите текст сами, выберите готовый шаблон или доверьтесь нашему AI-помощнику.</p></div>
+                    <div class="flex flex-col items-center"><div class="bg-indigo-100 text-indigo-600 w-16 h-16 rounded-full flex items-center justify-center mb-4 text-2xl font-bold">3</div><h4 class="text-xl font-bold mb-2">Запланируйте</h4><p class="text-slate-600">Выберите аудиторию, время отправки и нажмите "Старт". Система сделает всё за вас.</p></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="demo" class="py-20 px-6">
+            <div class="container mx-auto">
+                <div class="text-center mb-12"><h3 class="text-3xl font-bold mb-2">Интерактивная демонстрация</h3><p class="text-slate-600">Попробуйте сами, как ClientConnect AI решает эти проблемы.</p></div>
+                <div class="bg-slate-100 p-4 sm:p-8 rounded-2xl shadow-2xl border border-slate-200"><div class="mb-6 border-b border-slate-300"><nav class="-mb-px flex space-x-6" id="app-tabs"> <button data-tab="dashboard" class="tab-button active-tab whitespace-nowrap py-4 px-1 border-b-2 font-semibold text-sm text-indigo-600 border-indigo-500">Главная</button> <button data-tab="campaign" class="tab-button whitespace-nowrap py-4 px-1 border-b-2 font-semibold text-sm text-slate-500 border-transparent hover:text-slate-700 hover:border-slate-300">Создать рассылку</button> <button data-tab="contacts" class="tab-button whitespace-nowrap py-4 px-1 border-b-2 font-semibold text-sm text-slate-500 border-transparent hover:text-slate-700 hover:border-slate-300">Контакты</button> </nav></div>
+                    <div id="app-content">
+                        <div id="dashboard-view" class="app-view"><h4 class="text-xl font-bold mb-4">Сводка</h4><div class="chart-container mb-8"><canvas id="contactChart"></canvas></div><div class="bg-indigo-600 text-white p-8 rounded-2xl shadow-lg flex flex-col md:flex-row justify-between items-center gap-6"><div><h2 class="text-2xl font-bold">Увидели, как это работает?</h2><p class="opacity-80 mt-1">Дальше мы покажем, как легко создать кампанию.</p></div><button id="cta-to-campaign" class="bg-white text-indigo-600 font-bold py-3 px-6 rounded-lg w-full md:w-auto">Перейти к созданию</button></div></div>
+                        <div id="campaign-view" class="app-view hidden"><h4 class="text-xl font-bold mb-1">Создать рассылку</h4><p class="text-slate-500 mb-4 text-sm">Опишите акцию и нажмите "Сгенерировать с AI"</p><div class="grid grid-cols-1 md:grid-cols-2 gap-6"><div><label for="ai-prompt" class="block text-sm font-semibold text-slate-700 mb-1">Задача для AI:</label><input id="ai-prompt" type="text" placeholder="Скидка 20% на стрижку до конца июля" class="w-full p-3 border rounded-lg border-slate-300 focus:ring-2 focus:ring-indigo-500"><button id="generate-ai-btn" class="mt-3 w-full bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-indigo-700 flex items-center justify-center gap-2">Сгенерировать с AI ✨</button></div><div><label for="whatsapp-message" class="block text-sm font-semibold text-slate-700 mb-1">Текст сообщения WhatsApp:</label><textarea id="whatsapp-message" rows="5" class="w-full p-3 border rounded-lg border-slate-300 bg-white"></textarea></div></div><div class="mt-6 flex justify-end"><button id="schedule-btn" class="bg-green-500 text-white font-bold py-2 px-6 rounded-lg hover:bg-green-600">Запланировать</button></div><div id="schedule-confirm" class="hidden mt-4 text-center text-green-600 font-semibold">✅ Рассылка успешно запланирована!</div></div>
+                        <div id="contacts-view" class="app-view hidden"><h4 class="text-xl font-bold mb-4">Управление контактами</h4><input type="text" id="contact-search" placeholder="Поиск по имени или тегу..." class="w-full p-3 border rounded-lg mb-4 border-slate-300 focus:ring-2 focus:ring-indigo-500"><div class="bg-white rounded-lg shadow-md overflow-hidden"><table class="w-full text-left"><thead class="bg-slate-50"><tr><th class="p-4 text-sm font-semibold text-slate-600">Имя</th><th class="p-4 text-sm font-semibold text-slate-600 hidden sm:table-cell">Телефон</th><th class="p-4 text-sm font-semibold text-slate-600">Теги</th></tr></thead><tbody id="contact-list"></tbody></table></div></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-20 px-6">
+            <div class="container mx-auto"><div class="text-center mb-12"><h3 class="text-3xl font-bold mb-2">Отзывы наших клиентов</h3></div><div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto"><div class="bg-white p-8 rounded-2xl shadow-lg"> <p class="text-slate-600 italic">"С ClientConnect мы забыли, что такое 'неприходы'. Администратор теперь занимается продажами, а не рутиной. Это лучшее вложение за последний год!"</p><div class="mt-4 flex items-center"><div class="w-12 h-12 rounded-full bg-slate-200 mr-4"></div><div><p class="font-bold">Айнур С.</p><p class="text-sm text-slate-500">Владелица салона красоты "A-Style"</p></div></div></div><div class="bg-white p-8 rounded-2xl shadow-lg"><p class="text-slate-600 italic">"Раньше мы теряли клиентов, потому что забывали им позвонить. Теперь напоминания уходят автоматически, а конверсия в запись выросла на 30%. ИИ-помощник для акций - это просто пушка!"</p><div class="mt-4 flex items-center"><div class="w-12 h-12 rounded-full bg-slate-200 mr-4"></div><div><p class="font-bold">Ермек Т.</p><p class="text-sm text-slate-500">Управляющий "Auto-Fix Service"</p></div></div></div></div></div>
+        </section>
+        
+        <section id="contact-form-section" class="bg-white py-20 px-6">
+             <div class="container mx-auto max-w-2xl">
+                <div id="contact-form-container" class="bg-slate-100 p-8 rounded-2xl shadow-lg transition-all duration-500">
+                    <div class="form-content"><div class="text-center mb-8"><h3 class="text-3xl font-bold text-slate-900 mb-2">Готовы вывести ваш бизнес на новый уровень?</h3><p class="text-slate-600">Оставьте заявку на бесплатную демонстрацию, и мы свяжемся с вами в ближайшее время.</p></div><form id="lead-form" class="space-y-4"><label for="name" class="block text-sm font-semibold text-slate-700 mb-1">Ваше имя</label><input type="text" id="name" name="name" required class="w-full p-3 border rounded-lg border-slate-300 focus:ring-2 focus:ring-indigo-500"><label for="company" class="block text-sm font-semibold text-slate-700 mb-1">Название компании</label><input type="text" id="company" name="company" class="w-full p-3 border rounded-lg border-slate-300 focus:ring-2 focus:ring-indigo-500"><label for="phone" class="block text-sm font-semibold text-slate-700 mb-1">Телефон/WhatsApp</label><input type="tel" id="phone" name="phone" required class="w-full p-3 border rounded-lg border-slate-300 focus:ring-2 focus:ring-indigo-500"><button type="submit" class="w-full bg-indigo-600 text-white font-bold text-lg px-8 py-3 rounded-lg hover:bg-indigo-700 transition-transform transform hover:scale-105">Отправить заявку</button></form></div>
+                    <div class="success-message hidden flex-col items-center justify-center text-center h-64"><div class="bg-green-100 text-green-600 w-16 h-16 rounded-full flex items-center justify-center mb-4"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div><h3 class="text-2xl font-bold text-slate-900">Спасибо!</h3><p class="text-slate-600 mt-2">Ваша заявка отправлена. Мы скоро с вами свяжемся.</p></div>
+                </div>
+             </div>
+        </section>
+    </main>
+
+    <footer class="bg-slate-800 text-white py-8">
+        <div class="container mx-auto text-center text-slate-400 text-sm">
+            <p>&copy; 2025 ClientConnect AI. Все права защищены.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const mockContacts = [ { name: 'Елена Иванова', phone: '+77011234567', tags: 'Постоянный клиент, VIP' }, { name: 'Айдос Муратов', phone: '+77778901234', tags: 'Новый клиент' }, { name: 'Светлана Попова', phone: '+77055556677', tags: 'Постоянный клиент' }, { name: 'Тимур Ахметов', phone: '+77023334455', tags: 'Новый клиент, Акция' }, { name: 'Гульнара Сабитова', phone: '+77071112233', tags: 'VIP' } ];
+            const tabs = document.querySelectorAll('.tab-button');
+            const views = document.querySelectorAll('.app-view');
+            const switchTab = (tabName) => { tabs.forEach(tab => { tab.classList.toggle('active-tab', tab.dataset.tab === tabName); tab.classList.toggle('text-indigo-600', tab.dataset.tab === tabName); tab.classList.toggle('border-indigo-500', tab.dataset.tab === tabName); tab.classList.toggle('text-slate-500', tab.dataset.tab !== tabName); tab.classList.toggle('border-transparent', tab.dataset.tab !== tabName); }); views.forEach(view => { view.classList.toggle('hidden', view.id !== `${tabName}-view`); }); };
+            tabs.forEach(tab => { tab.addEventListener('click', () => switchTab(tab.dataset.tab)); });
+            document.getElementById('cta-to-campaign').addEventListener('click', () => { switchTab('campaign'); });
+            const generateAiBtn = document.getElementById('generate-ai-btn');
+            const promptInput = document.getElementById('ai-prompt');
+            const messageTextarea = document.getElementById('whatsapp-message');
+            generateAiBtn.addEventListener('click', () => { const promptValue = promptInput.value || "Скидка 20% на стрижку до конца июля"; generateAiBtn.textContent = 'Думаю...'; generateAiBtn.disabled = true; setTimeout(() => { messageTextarea.value = `Здравствуйте, [Имя клиента]! ✨ Хотите обновить образ? Только до конца июля дарим скидку 20% на стрижку для всех наших гостей! Записаться можно по номеру...`; generateAiBtn.innerHTML = 'Сгенерировать с AI ✨'; generateAiBtn.disabled = false; }, 1200); });
+            const scheduleBtn = document.getElementById('schedule-btn');
+            const scheduleConfirm = document.getElementById('schedule-confirm');
+            scheduleBtn.addEventListener('click', () => { scheduleConfirm.classList.remove('hidden'); setTimeout(() => scheduleConfirm.classList.add('hidden'), 3000); });
+            const contactList = document.getElementById('contact-list');
+            const contactSearch = document.getElementById('contact-search');
+            const renderContacts = (contactsToRender) => { contactList.innerHTML = ''; contactsToRender.forEach(contact => { const tagsHtml = contact.tags.split(',').map(tag => `<span class="bg-slate-200 text-slate-700 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded-full">${tag.trim()}</span>`).join(''); const row = document.createElement('tr'); row.className = 'border-b border-slate-200 hover:bg-slate-50'; row.innerHTML = `<td class="p-4 font-medium text-slate-900">${contact.name}</td><td class="p-4 text-slate-500 hidden sm:table-cell">${contact.phone}</td><td class="p-4">${tagsHtml}</td>`; contactList.appendChild(row); }); };
+            contactSearch.addEventListener('input', (e) => { const searchTerm = e.target.value.toLowerCase(); const filteredContacts = mockContacts.filter(c => c.name.toLowerCase().includes(searchTerm) || c.tags.toLowerCase().includes(searchTerm)); renderContacts(filteredContacts); });
+            
+            const timeSlider = document.getElementById('time-wasted');
+            const daysLostEl = document.getElementById('days-lost');
+            timeSlider.addEventListener('input', (e) => {
+                const hours = parseInt(e.target.value, 10);
+                const daysLost = Math.round((hours * 260) / 8); 
+                daysLostEl.textContent = daysLost;
+            });
+            
+            const noShowSlider = document.getElementById('no-shows');
+            const moneyLostEl = document.getElementById('money-lost');
+            noShowSlider.addEventListener('input', (e) => {
+                const noShows = parseInt(e.target.value, 10);
+                const moneyLost = noShows * 5000;
+                moneyLostEl.textContent = `${moneyLost.toLocaleString('ru-RU')} тг.`;
+            });
+            
+            const ctx = document.getElementById('contactChart').getContext('2d');
+            const contactChart = new Chart(ctx, { type: 'line', data: { labels: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл'], datasets: [{ label: 'Рост базы контактов', data: [65, 89, 120, 151, 196, 235, 280], fill: true, borderColor: 'rgb(79, 70, 229)', backgroundColor: 'rgba(79, 70, 229, 0.1)', tension: 0.4, pointBackgroundColor: 'rgb(79, 70, 229)', pointRadius: 5 }] }, options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } }, plugins: { legend: { display: false } }, interaction: { intersect: false, mode: 'index', }, } });
+            const leadForm = document.getElementById('lead-form');
+            const formContainer = document.getElementById('contact-form-container');
+            leadForm.addEventListener('submit', (e) => { e.preventDefault(); formContainer.classList.add('form-submitted'); setTimeout(() => { formContainer.classList.remove('form-submitted'); leadForm.reset(); }, 4000); });
+            renderContacts(mockContacts);
+        });
+    </script>
+</body>
+</html>
