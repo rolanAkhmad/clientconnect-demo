@@ -237,7 +237,7 @@
                     try {
                         let chatHistory = [{ role: "user", parts: [{ text: `Ты — AI-копирайтер. Напиши 1 короткое рекламное сообщение для WhatsApp на русском языке на тему: "${prompt}". Используй переменную '[Имя клиента]'.` }] }];
                         const payload = { contents: chatHistory };
-                        const apiKey = "";
+                        const apiKey = "AIzaSyBPJGhvEDIh69k7IKi9gmkDJF0oaCEI2xw";
                         const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;
                         const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
                         if (!response.ok) throw new Error('Ошибка сети');
@@ -256,7 +256,7 @@
                     showLoading(imageResultEl, 'Генерация изображения...');
                      try {
                         const payload = { instances: [{ prompt: `Рекламный баннер для Instagram. Тема: ${prompt}. Яркий, чистый, современный стиль.` }], parameters: { "sampleCount": 1} };
-                        const apiKey = "";
+                        const apiKey = "AIzaSyBPJGhvEDIh69k7IKi9gmkDJF0oaCEI2xw";
                         const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${apiKey}`;
                         const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
                         if (!response.ok) throw new Error('Ошибка сети');
