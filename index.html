@@ -321,7 +321,7 @@
                     try {
                         let chatHistory = [{ role: "user", parts: [{ text: `Клиент оставил отзыв: "${reviewText}". Напиши 1 короткий, вежливый и профессиональный ответ на этот отзыв от лица компании.` }] }];
                         const payload = { contents: chatHistory };
-                        const apiKey = "";
+                        const apiKey = "AIzaSyBPJGhvEDIh69k7IKi9gmkDJF0oaCEI2xw";
                         const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;
                         const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
                          if (!response.ok) throw new Error('Ошибка сети');
