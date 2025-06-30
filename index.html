@@ -100,6 +100,14 @@
         #mobile-menu.open {
             transform: translateX(0);
         }
+        
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .tab-btn.active { 
+            background-color: #4f46e5; /* indigo-600 */
+            color: white;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
     </style>
 </head>
 
@@ -677,6 +685,22 @@
                 }
             };
 
+            const setupTabs = () => {
+                const tabButtons = document.querySelectorAll('.tab-btn');
+                const tabContents = document.querySelectorAll('.tab-content');
+
+                tabButtons.forEach(button => {
+                    button.addEventListener('click', () => {
+                        tabButtons.forEach(btn => btn.classList.remove('active'));
+                        button.classList.add('active');
+                        const targetTab = button.dataset.tab;
+                        tabContents.forEach(content => {
+                            content.classList.toggle('active', content.id === targetTab);
+                        });
+                    });
+                });
+            };
+
             // --- ИНТЕРАКТИВНОЕ ДЕМО С AI ---
             const setupAiDemo = () => {
                 const generateTextBtn = document.getElementById('generate-text-btn');
@@ -799,6 +823,7 @@
             // --- ИНИЦИАЛИЗАЦИЯ ВСЕХ СКРИПТОВ ---
             setupMobileMenu();
             setupAiDemo();
+            setupTabs();
             setupUseCases();
             setupTestimonials();
         });
